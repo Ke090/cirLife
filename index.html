@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07100f">
+  <title>Orbit Life — Emergent particle ecology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient--one"></div>
+  <div class="ambient ambient--two"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Orbit Life home">
+      <span class="brand-mark" aria-hidden="true"><i></i><b></b></span>
+      <span>ORBIT <strong>LIFE</strong></span>
+    </a>
+    <div class="status-pill"><span class="status-dot"></span><span id="runStatus">SIMULATION RUNNING</span></div>
+    <div class="header-meta">
+      <span>SEED</span><strong id="seedTop">——</strong>
+      <button class="icon-button" id="soundButton" aria-label="サウンド（準備中）" title="サウンド（準備中）">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6h4l5 4V5L9 9H5Zm12.5 3c0-1.4-.8-2.6-2-3.2v6.4c1.2-.6 2-1.8 2-3.2Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="hero-copy">
+      <div>
+        <p class="eyebrow"><span></span> EMERGENT ECOLOGY / 01</p>
+        <h1>秩序は、<br><em>命令されない。</em></h1>
+      </div>
+      <p class="intro">単純な局所ルールから生まれる、予測不能な生命の軌跡。<br>粒子たちは集まり、離れ、やがて新しい秩序をつくる。</p>
+    </section>
+
+    <section class="workspace">
+      <aside class="control-panel glass-panel">
+        <div class="panel-heading">
+          <div><span class="section-index">01</span><h2>CONTROL</h2></div>
+          <span class="live-label"><i></i> LIVE</span>
+        </div>
+
+        <div class="primary-actions">
+          <button class="primary-button" id="playButton"><span class="pause-icon"></span><span id="playLabel">PAUSE</span></button>
+          <button class="secondary-button" id="resetButton">
+            <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg> RESET
+          </button>
+        </div>
+        <button class="random-button" id="randomButton">
+          <svg viewBox="0 0 24 24"><path d="m16 3 4 4-4 4M4 7h4c5 0 3 10 8 10h4M16 13l4 4-4 4M4 17h3"/></svg>
+          RANDOMIZE WORLD
+        </button>
+
+        <div class="control-group">
+          <div class="label-row"><label>SIMULATION SPEED</label><output id="speedOutput">1.0×</output></div>
+          <div class="speed-options" id="speedOptions">
+            <button data-speed="0.25">0.25</button><button data-speed="0.5">0.5</button><button class="active" data-speed="1">1×</button><button data-speed="2">2</button><button data-speed="4">4</button>
+          </div>
+        </div>
+
+        <div class="control-group parameters">
+          <div class="subheading"><span>PARAMETERS</span><button id="defaultsButton">DEFAULTS</button></div>
+          <label class="slider-row">
+            <span>Attraction <small>引力</small></span><output id="attractionValue">0.012</output>
+            <input id="attraction" type="range" min="0" max="0.03" step="0.001" value="0.012">
+          </label>
+          <label class="slider-row">
+            <span>Repulsion <small>反発</small></span><output id="repulsionValue">0.180</output>
+            <input id="repulsion" type="range" min="0.05" max="0.4" step="0.005" value="0.18">
+          </label>
+          <label class="slider-row">
+            <span>Orbit force <small>旋回</small></span><output id="orbitValue">0.008</output>
+            <input id="orbit" type="range" min="0" max="0.025" step="0.001" value="0.008">
+          </label>
+          <label class="slider-row">
+            <span>Birth chance <small>出生率</small></span><output id="birthValue">4%</output>
+            <input id="birth" type="range" min="0" max="0.12" step="0.005" value="0.04">
+          </label>
+          <label class="toggle-row">
+            <span><b>Natural aging</b><small>自然消耗を有効化</small></span>
+            <input id="aging" type="checkbox" checked><i></i>
+          </label>
+        </div>
+
+        <div class="hint"><span>＋</span><p><b>ADD LIFE</b>フィールドをクリック / ドラッグ</p></div>
+      </aside>
+
+      <section class="simulation-card" aria-label="Orbit Life simulation field">
+        <div class="canvas-wrap">
+          <canvas id="simulationCanvas"></canvas>
+          <canvas id="trailCanvas"></canvas>
+          <div class="field-label field-label--top"><i></i><span>HABITAT 01</span><b>R 500</b></div>
+          <div class="field-label field-label--bottom"><i></i><span>LOCAL RULES ACTIVE</span></div>
+          <div class="canvas-tip" id="canvasTip">CLICK TO SEED LIFE</div>
+          <div class="extinction" id="extinction">
+            <span>ECOSYSTEM STATUS</span><strong>EXTINCTION</strong><button id="extinctionRestart">RESTART / SAME SEED</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="data-panel">
+        <div class="glass-panel metrics-panel">
+          <div class="panel-heading"><div><span class="section-index">02</span><h2>ECOSYSTEM</h2></div><button class="tiny-toggle active" id="debugToggle">DATA ON</button></div>
+          <div id="debugContent">
+            <div class="hero-metric">
+              <span>LIVING PARTICLES</span>
+              <strong id="livingCount">600</strong>
+              <small id="populationDelta">● &nbsp; +0.0%</small>
+            </div>
+            <div class="metric-grid">
+              <div><span>CORPSES</span><strong id="corpseCount">0</strong></div>
+              <div><span>AVG. ENERGY</span><strong id="averageEnergy">1.00</strong></div>
+              <div><span>BIRTH / SEC</span><strong class="green" id="birthRate">0.0</strong></div>
+              <div><span>DEATH / SEC</span><strong class="orange" id="deathRate">0.0</strong></div>
+            </div>
+            <div class="chart-header"><span>POPULATION / 60 SEC</span><b id="simulationTime">00:00</b></div>
+            <canvas id="populationChart" height="92"></canvas>
+            <div class="chart-legend"><span><i class="living-key"></i>LIVING</span><span><i class="corpse-key"></i>CORPSE</span></div>
+          </div>
+        </div>
+
+        <div class="glass-panel observation-panel">
+          <div class="panel-heading"><div><span class="section-index">03</span><h2>OBSERVATION</h2></div></div>
+          <div class="observation-row"><span>AVG. NEIGHBORS</span><b id="averageNeighbors">0.0</b></div>
+          <div class="observation-row"><span>SIMULATION TIME</span><b id="timeDetail">00:00.0</b></div>
+          <div class="observation-row"><span>FRAME RATE</span><b id="fps">60 FPS</b></div>
+          <div class="seed-block"><span>CURRENT SEED</span><div><code id="seedDetail">00000000</code><button id="copySeed" aria-label="シードをコピー">COPY</button></div></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer><span>ORBIT LIFE / GENERATIVE SYSTEM</span><span>LOCAL RULES → EMERGENT ORDER</span><span>BUILD 01.2026</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>
